@@ -12,6 +12,8 @@ def read(fname):
 install_requires = [
     'django',
     'django-oscar',
+    'django-localflavor',
+    'requests>=1.0',
 ]
 
 tests_require = [
@@ -25,7 +27,7 @@ tests_require = [
 
 setup(
     name="django-oscar-asiapay",
-    version=multilingual_events.__version__,
+    version=asiapay.__version__,
     description=read('DESCRIPTION'),
     long_description=read('README.rst'),
     license='The MIT License',

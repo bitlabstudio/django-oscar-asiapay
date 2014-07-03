@@ -4,7 +4,7 @@
 # Packaging
 dist
 build/
-django_oscar_paypal.egg-info/
+django_oscar_asiapay.egg-info/
 docs/_build
 
 # Testing
