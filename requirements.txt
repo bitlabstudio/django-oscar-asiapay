@@ -1,0 +1,21 @@
+# Install these requirements if you wish to contribute to this project.
+
+# ===========================================================================
+# Packages essential to this app. Needed by anyone who wants to use this app.
+# ===========================================================================
+django==1.6.2
+django-oscar
+South==0.8.4
+
+# ==============================================================
+# Packages needed for running the tests. Needed by contributors.
+# ==============================================================
+Fabric
+factory-boy
+flake8
+mock
+django-nose
+coverage
+django-coverage
+ipython
+ipdb
