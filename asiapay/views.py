@@ -1,13 +1,15 @@
+"""Views for the ``asiapay`` app."""
 from decimal import Decimal as D
-import urllib
+import httplib
 import logging
+import urllib
+import urllib2
+import urlparse
 
-from django.views.generic import RedirectView, View
+from django.views.generic import RedirectView
 from django.conf import settings
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import get_model
@@ -17,9 +19,8 @@ from oscar.apps.checkout.views import PaymentDetailsView, CheckoutSessionMixin
 from oscar.apps.payment.exceptions import UnableToTakePayment
 from oscar.apps.payment.models import SourceType, Source
 from oscar.core.loading import get_class
-from oscar.apps.shipping.methods import FixedPrice, NoShippingRequired
 
-from asiapay.paydollar.facade import get_asiapay_url, fetch_transaction_details, confirm_transaction
+from .facade import get_asiapay_url
 from asiapay.paydollar.exceptions import (
     EmptyBasketException, MissingShippingAddressException,
     MissingShippingMethodException)
@@ -53,7 +54,8 @@ class RedirectView(CheckoutSessionMixin, RedirectView):
             basket = self.request.basket
             url = self._get_redirect_url(basket, **kwargs)
         except AsiaPayError:
-            messages.error(self.request, _("An error occurred communicating with AsiaPay"))
+            messages.error(self.request, _(
+                "An error occurred communicating with AsiaPay"))
             if self.as_payment_method:
                 url = reverse('checkout:payment-details')
             else:
@@ -63,10 +65,12 @@ class RedirectView(CheckoutSessionMixin, RedirectView):
             messages.error(self.request, _("Your basket is empty"))
             return reverse('basket:summary')
         except MissingShippingAddressException:
-            messages.error(self.request, _("A shipping address must be specified"))
+            messages.error(
+                self.request, _("A shipping address must be specified"))
             return reverse('checkout:shipping-address')
         except MissingShippingMethodException:
-            messages.error(self.request, _("A shipping method must be specified"))
+            messages.error(
+                self.request, _("A shipping method must be specified"))
             return reverse('checkout:shipping-method')
         else:
             # Transaction successfully registered with AsiaPay.  Now freeze the
@@ -116,18 +120,27 @@ class RedirectView(CheckoutSessionMixin, RedirectView):
         if user.is_authenticated():
             params['user'] = user
 
-        params['asiapay_params'] = self._get_asiapay_params()
-
+        import ipdb
+        ipdb.set_trace()
+        url, post_data = get_asiapay_url(**params)
+        for key, value in post_data.iteritems():
+            post_data[key] = unicode(value).encode('utf-8')
+        data = urllib.urlencode(post_data)
+        try:
+            response = urllib2.urlopen(url, data=data)
+        except (
+                urllib2.HTTPError,
+                urllib2.URLError,
+                httplib.HTTPException), ex:
+            self.log_error(
+                ex, api_url=url, request_data=data,
+                transaction=transaction)
+        else:
+            parsed_response = urlparse.parse_qs(response.read())
         return get_asiapay_url(**params)
 
-    def _get_asiapay_params(self):
-        """
-        Return any additional AsiaPay parameters
-        """
-        return {}
 
-
-class CancelResponseView(RedirectView):
+class FailResponseView(RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
@@ -136,7 +149,7 @@ class CancelResponseView(RedirectView):
         basket.thaw()
         logger.info("Payment cancelled (token %s) - basket #%s thawed",
                     request.GET.get('token', '<no token>'), basket.id)
-        return super(CancelResponseView, self).get(request, *args, **kwargs)
+        return super(FailResponseView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
         messages.error(self.request, _("AsiaPay transaction cancelled"))
@@ -177,7 +190,8 @@ class SuccessResponseView(PaymentDetailsView):
                 "Unable to fetch transaction details for token %s: %s",
                 self.token, e)
             messages.error(
-                self.request, _("A problem occurred communicating with AsiaPay - please try again later"))
+                self.request, _('A problem occurred communicating with'
+                                ' AsiaPay - please try again later'))
             return HttpResponseRedirect(reverse('basket:summary'))
 
         # Reload frozen basket which is specified in the URL
@@ -305,121 +319,3 @@ class SuccessResponseView(PaymentDetailsView):
         self.add_payment_source(source)
         self.add_payment_event('Settled', confirm_txn.amount,
                                reference=confirm_txn.correlation_id)
-
-    def get_shipping_address(self, basket):
-        """
-        Return a created shipping address instance, created using
-        the data returned by AsiaPay.
-        """
-        # Determine names - AsiaPay uses a single field
-        ship_to_name = self.txn.value('PAYMENTREQUEST_0_SHIPTONAME')
-        if ship_to_name is None:
-            return None
-        first_name = last_name = None
-        parts = ship_to_name.split()
-        if len(parts) == 1:
-            last_name = ship_to_name
-        elif len(parts) > 1:
-            first_name = parts[0]
-            last_name = " ".join(parts[1:])
-
-        return ShippingAddress(
-            first_name=first_name,
-            last_name=last_name,
-            line1=self.txn.value('PAYMENTREQUEST_0_SHIPTOSTREET'),
-            line2=self.txn.value('PAYMENTREQUEST_0_SHIPTOSTREET2', default=""),
-            line4=self.txn.value('PAYMENTREQUEST_0_SHIPTOCITY', default=""),
-            state=self.txn.value('PAYMENTREQUEST_0_SHIPTOSTATE', default=""),
-            postcode=self.txn.value('PAYMENTREQUEST_0_SHIPTOZIP'),
-            country=Country.objects.get(iso_3166_1_a2=self.txn.value('PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE'))
-        )
-
-    def get_shipping_method(self, basket, shipping_address=None, **kwargs):
-        """
-        Return the shipping method used
-        """
-        if not basket.is_shipping_required():
-            return NoShippingRequired()
-
-        # Instantiate a new FixedPrice shipping method instance
-        charge_incl_tax = D(self.txn.value('PAYMENTREQUEST_0_SHIPPINGAMT'))
-        # Assume no tax for now
-        charge_excl_tax = charge_incl_tax
-        method = FixedPrice(charge_excl_tax, charge_incl_tax)
-        method.set_basket(basket)
-        name = self.txn.value('SHIPPINGOPTIONNAME')
-
-        if not name:
-            session_method = super(SuccessResponseView, self).get_shipping_method(
-                basket, shipping_address, **kwargs)
-            if session_method:
-                method.name = session_method.name
-        else:
-            method.name = name
-        return method
-
-
-class ShippingOptionsView(View):
-
-    def post(self, request, *args, **kwargs):
-        """
-        We use the shipping address given to use by AsiaPay to
-        determine the available shipping method
-        """
-        # Basket ID is passed within the URL path.  We need to do this as some
-        # shipping options depend on the user and basket contents.  AsiaPay do
-        # pass back details of the basket contents but it would be royal pain to
-        # reconstitute the basket based on those - easier to just to piggy-back
-        # the basket ID in the callback URL.
-        basket = get_object_or_404(Basket, id=kwargs['basket_id'])
-        user = basket.owner
-        if not user:
-            user = AnonymousUser()
-
-        # Create a shipping address instance using the data passed back
-        country_code = self.request.POST.get(
-            'PAYMENTREQUEST_0_SHIPTOCOUNTRY', None)
-        try:
-            country = Country.objects.get(iso_3166_1_a2=country_code)
-        except Country.DoesNotExist:
-            country = Country()
-
-        shipping_address = ShippingAddress(
-            line1=self.request.POST.get('PAYMENTREQUEST_0_SHIPTOSTREET', None),
-            line2=self.request.POST.get('PAYMENTREQUEST_0_SHIPTOSTREET2', None),
-            line4=self.request.POST.get('PAYMENTREQUEST_0_SHIPTOCITY', None),
-            state=self.request.POST.get('PAYMENTREQUEST_0_SHIPTOSTATE', None),
-            postcode=self.request.POST.get('PAYMENTREQUEST_0_SHIPTOZIP', None),
-            country=country
-        )
-        methods = self.get_shipping_methods(user, basket, shipping_address)
-        return self.render_to_response(methods)
-
-    def render_to_response(self, methods):
-        pairs = [
-            ('METHOD', 'CallbackResponse'),
-            ('CURRENCYCODE', self.request.POST.get('CURRENCYCODE', 'GBP')),
-        ]
-        for index, method in enumerate(methods):
-            pairs.append(('L_SHIPPINGOPTIONNAME%d' % index,
-                          unicode(method.name)))
-            pairs.append(('L_SHIPPINGOPTIONLABEL%d' % index,
-                          unicode(method.name)))
-            pairs.append(('L_SHIPPINGOPTIONAMOUNT%d' % index,
-                          method.charge_incl_tax))
-            # For now, we assume tax and insurance to be zero
-            pairs.append(('L_TAXAMT%d' % index, D('0.00')))
-            pairs.append(('L_INSURANCEAMT%d' % index, D('0.00')))
-            # We assume that the first returned method is the default one
-            pairs.append(('L_SHIPPINGOPTIONISDEFAULT%d' % index, 1 if index == 0 else 0))
-        else:
-            # No shipping methods available - we flag this up to AsiaPay indicating that we
-            # do not ship to the shipping address.
-            pairs.append(('NO_SHIPPING_OPTION_DETAILS', 1))
-        payload = urllib.urlencode(pairs)
-        return HttpResponse(payload)
-
-    def get_shipping_methods(self, user, basket, shipping_address):
-        repo = Repository()
-        return repo.get_shipping_methods(
-            user, basket, shipping_addr=shipping_address)

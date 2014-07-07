@@ -1,5 +1,4 @@
 from django.views import generic
-from django.conf import settings
 
 from asiapay.paydollar import models
 

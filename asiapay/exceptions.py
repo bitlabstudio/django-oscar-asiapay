@@ -1,9 +1,13 @@
-try:
-    from oscar.apps.payment.exceptions import PaymentError
-except ImportError:
-    class PaymentError(Exception):
-        pass
+"""Exceptions for the ``asiapay`` app."""
 
 
-class AsiaPayError(PaymentError):
+class EmptyBasketException(Exception):
+    pass
+
+
+class MissingShippingAddressException(Exception):
+    pass
+
+
+class MissingShippingMethodException(Exception):
     pass

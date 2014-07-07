@@ -12,7 +12,8 @@ class PaydollarDashboardApplication(Application):
     detail_view = views.TransactionDetailView
 
     def get_urls(self):
-        urlpatterns = patterns('',
+        urlpatterns = patterns(
+            '',
             url(r'^transactions/$', self.list_view.as_view(),
                 name='asiapay-paydollar-list'),
             url(r'^transactions/(?P<pk>\d+)/$', self.detail_view.as_view(),

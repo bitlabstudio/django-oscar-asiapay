@@ -38,6 +38,46 @@ Usage
 
 TODO
 
+Settings
+--------
+
+ASIAPAY_PAYDOLLAR_URL
++++++++++++++++++++++
+
+URL to connect to AsiaPay. Testing url::
+
+    https://test.paydollar.com/b2cDemo/eng/payment/payForm.jsp
+
+Production url::
+
+    https://www.paydollar.com/b2c2/eng/payment/payForm.jsp
+
+
+ASIAPAY_CURRENCY_CODE
++++++++++++++++++++++
+
+Default: '702'
+
+Currency you want to use. Please check the PayDollar Integration Guide
+
+ASIAPAY_LANGUAGE
+++++++++++++++++
+
+Default: 'E'
+
+Language of the payment page.
+
+- 'C': Traditional Chinese
+- 'E': English
+- 'F': French
+- 'G': German
+- 'J': Japanese
+- 'R': Russian
+- 'S': Spanish
+- 'T': Thai
+- 'V': Vietnamese
+- 'X': Simplified Chinese
+
 
 Roadmap
 -------

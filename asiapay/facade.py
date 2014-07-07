@@ -6,8 +6,8 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from asiapay.paydollar.models import PaydollarTransaction as Transaction
-from asiapay.paydollar.gateway import (
+from .models import PaydollarTransaction as Transaction
+from .gateway import (
     set_txn, get_txn, do_txn, SALE, AUTHORIZATION, ORDER,
     do_capture, DO_PAYDOLLAR_CHECKOUT, do_void, refund_txn
 )
@@ -17,13 +17,13 @@ def _get_payment_action():
     # AsiaPay supports 3 actions: 'Sale', 'Authorization', 'Order'
     action = getattr(settings, 'ASIAPAY_PAYMENT_ACTION', SALE)
     if action not in (SALE, AUTHORIZATION, ORDER):
-        raise ImproperlyConfigured("'%s' is not a valid payment action" % action)
+        raise ImproperlyConfigured(
+            "'%s' is not a valid payment action" % action)
     return action
 
 
 def get_asiapay_url(basket, shipping_methods, user=None, shipping_address=None,
-                   shipping_method=None, host=None, scheme=None,
-                   asiapay_params=None):
+                    shipping_method=None, host=None, scheme=None):
     """
     Return the URL for a AsiaPay Paydollar transaction.
 
@@ -38,11 +38,11 @@ def get_asiapay_url(basket, shipping_methods, user=None, shipping_address=None,
     if scheme is None:
         use_https = getattr(settings, 'ASIAPAY_CALLBACK_HTTPS', True)
         scheme = 'https' if use_https else 'http'
-    return_url = '%s://%s%s' % (
+    success_url = '%s://%s%s' % (
         scheme, host, reverse('asiapay-success-response', kwargs={
             'basket_id': basket.id}))
-    cancel_url = '%s://%s%s' % (
-        scheme, host, reverse('asiapay-cancel-response', kwargs={
+    fail_url = '%s://%s%s' % (
+        scheme, host, reverse('asiapay-fail-response', kwargs={
             'basket_id': basket.id}))
 
     # URL for updating shipping methods - we only use this if we have a set of
@@ -70,16 +70,15 @@ def get_asiapay_url(basket, shipping_methods, user=None, shipping_address=None,
     return set_txn(basket=basket,
                    shipping_methods=shipping_methods,
                    currency=currency,
-                   return_url=return_url,
-                   cancel_url=cancel_url,
+                   success_url=success_url,
+                   fail_url=fail_url,
                    update_url=update_url,
                    action=_get_payment_action(),
                    shipping_method=shipping_method,
                    shipping_address=shipping_address,
                    user=user,
                    user_address=address,
-                   no_shipping=no_shipping,
-                   asiapay_params=asiapay_params)
+                   no_shipping=no_shipping)
 
 
 def fetch_transaction_details(token):
