@@ -1,6 +1,6 @@
 from django.views import generic
 
-from asiapay.paydollar import models
+from .. import models
 
 
 class TransactionListView(generic.ListView):

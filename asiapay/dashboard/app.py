@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from oscar.core.application import Application
 
-from asiapay.paydollar.dashboard import views
+from asiapay.dashboard import views
 
 
 class PaydollarDashboardApplication(Application):

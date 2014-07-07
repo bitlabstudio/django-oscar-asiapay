@@ -21,7 +21,6 @@ class PaydollarTransactionAdmin(admin.ModelAdmin):
         'raw_response',
         'response_time',
         'date_created',
-        'request',
         'response']
 
 

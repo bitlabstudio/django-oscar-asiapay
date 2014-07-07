@@ -21,7 +21,7 @@ from oscar.apps.payment.models import SourceType, Source
 from oscar.core.loading import get_class
 
 from .facade import get_asiapay_url
-from asiapay.paydollar.exceptions import (
+from .exceptions import (
     EmptyBasketException, MissingShippingAddressException,
     MissingShippingMethodException)
 from asiapay.exceptions import AsiaPayError

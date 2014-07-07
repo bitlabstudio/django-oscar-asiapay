@@ -1,7 +1,7 @@
 """Urls for the ``asiapay`` app."""
 from django.conf.urls import patterns, url
 
-from asiapay.paydollar import views
+from asiapay import views
 
 
 urlpatterns = patterns(

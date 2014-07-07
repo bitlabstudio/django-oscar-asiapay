@@ -4,7 +4,7 @@ from decimal import Decimal as D
 from django.conf import settings
 from django.template.defaultfilters import truncatewords, striptags
 
-from asiapay.paydollar import models
+from asiapay import models
 from asiapay import gateway
 from asiapay import exceptions
 
@@ -19,7 +19,7 @@ REFUND_TRANSACTION = 'RefundTransaction'
 
 SALE, AUTHORIZATION, ORDER = 'Sale', 'Authorization', 'Order'
 
-logger = logging.getLogger('asiapay.paydollar')
+logger = logging.getLogger('asiapay')
 
 
 def _format_description(description):
