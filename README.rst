@@ -36,7 +36,30 @@ Run the South migrations::
 Usage
 -----
 
-TODO
+Please make sure you have installed ``django-oscar`` (up and running).
+You can easily customize oscar by overwriting its apps. Please check oscar's
+docs if you don't know what I'm talking about.
+
+To use AsiaPay please check the directory ``oscar_integration_example``.
+
+Basically the ``OscarPaymentDetailsView`` has been overwritten, so the user
+will be re-directed to AsiaPay after confirming the checkout. We've customized
+the ``preview.html`` template::
+
+	<form method="post" action="{{ asiapay_url }}">
+		{% csrf_token %}
+		<input type="hidden" name="merchantId" value="{{ merchant_id }}">
+		<input type="hidden" name="currCode" value="{{ currency_code }}">
+		<input type="hidden" name="orderRef" value="{{ order_number }}">
+		<input type="hidden" name="amount" value="{{ order_total.incl_tax }}">
+		<input type="hidden" name="successUrl" value="{{ success_url }}">
+		<input type="hidden" name="failUrl" value="{{ fail_url }}">
+		<input type="hidden" name="errorUrl" value="{{ error_url }}">
+		<input type="hidden" name="lang" value="{{ asiapay_lang }}">
+		<input type="hidden" name="payType" value="{{ asiapay_paytype }}">
+		<img src="https://raw.githubusercontent.com/bitmazk/django-oscar-asiapay/master/payv_logo.gif" alt="{% trans "AsiaPay" %}" />
+		<button id='place-order' type="submit" class="btn btn-primary btn-block js-disable-on-click" data-loading-text="{% trans "Sending..." %}">{% trans "Submit" %}</button>
+	</form>
 
 Settings
 --------
