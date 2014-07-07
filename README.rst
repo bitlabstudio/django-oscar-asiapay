@@ -58,7 +58,7 @@ ASIAPAY_CURRENCY_CODE
 
 Default: '702'
 
-Currency you want to use. Please check the PayDollar Integration Guide
+Currency you want to use. Please check the PayDollar Integration Guide.
 
 ASIAPAY_LANGUAGE
 ++++++++++++++++
@@ -77,6 +77,26 @@ Language of the payment page.
 - 'T': Thai
 - 'V': Vietnamese
 - 'X': Simplified Chinese
+
+ASIAPAY_LOCALTEST_URL
++++++++++++++++++++++
+
+Use this setting to test a response from AsiaPay locally. We can recommend
+``ngrok`` to mask localhost.
+
+ASIAPAY_CALLBACK_HTTPS
+++++++++++++++++++++++
+
+Default: True
+
+Use ``https`` (True) or ``http`` (False) to construct reponse urls.
+
+ASIAPAY_PAYTYPE
++++++++++++++++
+
+Default: 'N'
+
+Paytype you want to use. Please check the PayDollar Integration Guide.
 
 
 Roadmap
