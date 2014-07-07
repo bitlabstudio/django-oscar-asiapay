@@ -9,7 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 from .models import PaydollarTransaction as Transaction
 from .gateway import (
     set_txn, get_txn, do_txn, SALE, AUTHORIZATION, ORDER,
-    do_capture, DO_PAYDOLLAR_CHECKOUT, do_void, refund_txn
+    do_capture, DO_PAYDOLLAR_CHECKOUT, do_void
 )
 
 
@@ -94,13 +94,6 @@ def confirm_transaction(payer_id, token, amount, currency):
     """
     return do_txn(payer_id, token, amount, currency,
                   action=_get_payment_action())
-
-
-def refund_transaction(token, amount, currency, note=None):
-    txn = Transaction.objects.get(token=token,
-                                  method=DO_PAYDOLLAR_CHECKOUT)
-    is_partial = amount < txn.amount
-    return refund_txn(txn.value('TRANSACTIONID'), is_partial, amount, currency)
 
 
 def capture_authorization(token, note=None):
