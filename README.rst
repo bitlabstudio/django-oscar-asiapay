@@ -28,6 +28,13 @@ Add ``django-oscar-asiapay`` to your ``INSTALLED_APPS``::
         'asiapay',
     )
 
+Hook this app into your ``urls.py``::
+
+    urlpatterns = patterns('',
+        ...
+        url(r'^asiapay/', include('asiapay.urls')),
+    )
+
 Run the South migrations::
 
     ./manage.py migrate asiapay
