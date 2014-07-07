@@ -4,9 +4,8 @@ from decimal import Decimal as D
 from django.conf import settings
 from django.template.defaultfilters import truncatewords, striptags
 
-from asiapay import models
-from asiapay import gateway
-from asiapay import exceptions
+from . import models
+from . import exceptions
 
 
 # AsiaPay methods
@@ -100,6 +99,8 @@ def _fetch_response(method, params):
 def set_txn(basket, shipping_methods, currency, success_url, fail_url,
             update_url=None, action=SALE, user=None, user_address=None,
             shipping_method=None, shipping_address=None, no_shipping=False):
+    import ipdb
+    ipdb.set_trace()
     amount = basket.total_incl_tax
     if amount <= 0:
         msg = 'Zero value basket is not allowed'

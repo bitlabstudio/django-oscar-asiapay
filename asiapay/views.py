@@ -22,9 +22,12 @@ from oscar.core.loading import get_class
 
 from .facade import get_asiapay_url
 from .exceptions import (
-    EmptyBasketException, MissingShippingAddressException,
-    MissingShippingMethodException)
-from asiapay.exceptions import AsiaPayError
+    AsiaPayError,
+    EmptyBasketException,
+    issingShippingAddressException,
+    MissingShippingMethodException,
+)
+
 
 ShippingAddress = get_model('order', 'ShippingAddress')
 Country = get_model('address', 'Country')
