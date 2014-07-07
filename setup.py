@@ -17,6 +17,7 @@ install_requires = [
 ]
 
 tests_require = [
+    'django_libs',
     'fabric',
     'factory_boy',
     'django-nose',

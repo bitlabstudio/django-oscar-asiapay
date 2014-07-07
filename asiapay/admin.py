@@ -4,24 +4,29 @@ from django.contrib import admin
 from asiapay import models
 
 
-class PaydollarTransactionAdmin(admin.ModelAdmin):
-    list_display = ['method', 'amount', 'currency', 'correlation_id', 'ack',
-                    'token', 'error_code', 'error_message', 'date_created']
-    readonly_fields = [
-        'method',
-        'version',
+class AsiaPayTransactionAdmin(admin.ModelAdmin):
+    list_display = [
+        'payment_method',
+        'currency_code',
+        'order_number',
+        'ip_country',
         'amount',
-        'currency',
-        'ack',
-        'correlation_id',
-        'token',
-        'error_code',
-        'error_message',
-        'raw_request',
-        'raw_response',
-        'response_time',
-        'date_created',
-        'response']
+        'transaction_time',
+    ]
+    readonly_fields = [
+        'payment_method',
+        'auth_id',
+        '5005',
+        'ip_country',
+        'account_holder',
+        'transaction_time',
+        'eci',
+        'pan_first_6',
+        'exp_month',
+        'exp_year',
+        '92.209.35.250',
+        'pan_first_4',
+    ]
 
 
-admin.site.register(models.PaydollarTransaction, PaydollarTransactionAdmin)
+admin.site.register(models.AsiaPayTransaction, AsiaPayTransactionAdmin)

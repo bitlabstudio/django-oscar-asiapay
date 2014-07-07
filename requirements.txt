@@ -11,6 +11,7 @@ South==0.8.4
 # Packages needed for running the tests. Needed by contributors.
 # ==============================================================
 Fabric
+django-libs
 factory-boy
 flake8
 mock
