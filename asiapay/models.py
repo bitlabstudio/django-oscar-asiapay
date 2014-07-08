@@ -81,6 +81,7 @@ class AsiaPayTransaction(models.Model):
     auth_id = models.CharField(
         verbose_name=_('Auth ID'),
         max_length=128,
+        blank=True,
     )
 
     success_code = models.SmallIntegerField(
@@ -132,6 +133,7 @@ class AsiaPayTransaction(models.Model):
 
     bank_reference = models.IntegerField(
         verbose_name=_('Bank reference (ORD)'),
+        blank=True, null=True,
     )
 
     account_holder = models.CharField(

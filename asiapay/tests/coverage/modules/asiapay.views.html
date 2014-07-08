@@ -126,16 +126,16 @@
 <div id="content-header">
   <h1>
     <span id="module-name">asiapay.views</span>:
-    47 total statements,
+    46 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Mon 2014-07-07 23:44 CEST</p>
+  <p>Generated: Tue 2014-07-08 11:29 CEST</p>
   <p>Source file: /home/tobi/Projects/django-oscar-asiapay/src/asiapay/views.py</p>
   <p>
     Stats:
     <span class="executed">29 executed</span>,
     <span class="missed">0 missed</span>,
-    <span class="excluded">18 excluded</span>,
+    <span class="excluded">17 excluded</span>,
     <span class="ignored">49 ignored</span> 
   </p> 
 </div>
@@ -146,7 +146,6 @@
 <li class="excluded"><code>import logging</code></li>
 <li class="ignored"><code></code></li>
 <li class="excluded"><code>from django.views.generic import RedirectView, View</code></li>
-<li class="excluded"><code>from django.shortcuts import get_object_or_404</code></li>
 <li class="excluded"><code>from django.contrib import messages</code></li>
 <li class="excluded"><code>from django.core.urlresolvers import reverse</code></li>
 <li class="excluded"><code>from django.http import Http404, HttpResponse</code></li>
@@ -220,7 +219,7 @@
 <li class="ignored"><code>            order_number=request.POST['Ref'],</code></li>
 <li class="ignored"><code>            ip_country=request.POST['ipCountry'],</code></li>
 <li class="ignored"><code>            payment_reference=request.POST['PayRef'],</code></li>
-<li class="ignored"><code>            bank_reference=request.POST['Ord'],</code></li>
+<li class="ignored"><code>            bank_reference=request.POST['Ord'] or None,</code></li>
 <li class="ignored"><code>            account_holder=request.POST['Holder'],</code></li>
 <li class="ignored"><code>            amount=request.POST['Amt'],</code></li>
 <li class="ignored"><code>            transaction_time=request.POST['TxTime'],</code></li>

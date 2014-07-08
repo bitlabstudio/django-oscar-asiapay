@@ -75,7 +75,7 @@ class DataFeedView(View):
             order_number=request.POST['Ref'],
             ip_country=request.POST['ipCountry'],
             payment_reference=request.POST['PayRef'],
-            bank_reference=request.POST['Ord'],
+            bank_reference=request.POST['Ord'] or None,
             account_holder=request.POST['Holder'],
             amount=request.POST['Amt'],
             transaction_time=request.POST['TxTime'],

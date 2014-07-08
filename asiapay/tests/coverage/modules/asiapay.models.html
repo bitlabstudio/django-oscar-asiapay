@@ -130,14 +130,14 @@
     41 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Mon 2014-07-07 23:44 CEST</p>
+  <p>Generated: Tue 2014-07-08 11:29 CEST</p>
   <p>Source file: /home/tobi/Projects/django-oscar-asiapay/src/asiapay/models.py</p>
   <p>
     Stats:
     <span class="executed">37 executed</span>,
     <span class="missed">0 missed</span>,
     <span class="excluded">4 excluded</span>,
-    <span class="ignored">177 ignored</span> 
+    <span class="ignored">179 ignored</span> 
   </p> 
 </div>
 
@@ -226,6 +226,7 @@
 <li class="executed"><code>    auth_id = models.CharField(</code></li>
 <li class="ignored"><code>        verbose_name=_('Auth ID'),</code></li>
 <li class="ignored"><code>        max_length=128,</code></li>
+<li class="ignored"><code>        blank=True,</code></li>
 <li class="ignored"><code>    )</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    success_code = models.SmallIntegerField(</code></li>
@@ -277,6 +278,7 @@
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    bank_reference = models.IntegerField(</code></li>
 <li class="ignored"><code>        verbose_name=_('Bank reference (ORD)'),</code></li>
+<li class="ignored"><code>        blank=True, null=True,</code></li>
 <li class="ignored"><code>    )</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    account_holder = models.CharField(</code></li>
