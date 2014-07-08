@@ -16,7 +16,7 @@ class AsiaPayTransactionAdmin(admin.ModelAdmin):
     readonly_fields = [
         'payment_method',
         'auth_id',
-        '5005',
+        'pan_last_4',
         'ip_country',
         'account_holder',
         'transaction_time',
@@ -24,7 +24,7 @@ class AsiaPayTransactionAdmin(admin.ModelAdmin):
         'pan_first_6',
         'exp_month',
         'exp_year',
-        '92.209.35.250',
+        'source_ip',
         'pan_first_4',
     ]
 
