@@ -147,6 +147,7 @@ class AsiaPayTransaction(models.Model):
 
     transaction_time = models.DateTimeField(
         verbose_name=_('Transaction time'),
+        blank=True, null=True,
     )
 
     eci = models.CharField(
