@@ -80,8 +80,8 @@ class DataFeedView(View):
             exp_month=request.POST.get('expMonth'),
             exp_year=request.POST.get('expYear'),
             source_ip=request.POST.get('sourceIp'),
-            pan_first_4=request.POST.get('panFirst4'),
-            pan_first_6=request.POST.get('panFirst6'),
-            pan_last_4=request.POST.get('panLast4'),
+            pan_first_4=request.POST.get('panFirst4') or '',
+            pan_first_6=request.POST.get('panFirst6') or '',
+            pan_last_4=request.POST.get('panLast4') or '',
         )
         return HttpResponse('OK')

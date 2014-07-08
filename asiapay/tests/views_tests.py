@@ -59,7 +59,7 @@ class DataFeedViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         }
 
     def test_view(self):
-        self.is_callable()
+        self.is_not_callable()
         self.is_postable(data=self.data, ajax=True)
         self.assertEqual(models.AsiaPayTransaction.objects.count(), 1, msg=(
             'A new transaction should have been saved.'))
