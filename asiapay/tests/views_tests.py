@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from django_libs.tests.mixins import ViewRequestFactoryTestMixin
-from oscar.apps.basket.models import Basket
 from oscar.apps.order.utils import OrderNumberGenerator
 
 from . import factories

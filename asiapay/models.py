@@ -169,7 +169,8 @@ class AsiaPayTransaction(models.Model):
     alert_code = models.CharField(
         verbose_name=_('Alert code'),
         max_length=50,
-        help_text=_('e.g. R14 - IP Country not match with Issuing Country')
+        blank=True,
+        help_text=_('e.g. R14 - IP Country not match with Issuing Country'),
     )
 
     merchant_id = models.IntegerField(
@@ -179,10 +180,12 @@ class AsiaPayTransaction(models.Model):
 
     exp_month = models.PositiveIntegerField(
         verbose_name=_('Expiration month of card'),
+        blank=True, null=True,
     )
 
     exp_year = models.PositiveIntegerField(
         verbose_name=_('Expiration year of card'),
+        blank=True, null=True,
     )
 
     source_ip = models.IPAddressField(
@@ -192,16 +195,19 @@ class AsiaPayTransaction(models.Model):
     pan_first_4 = models.CharField(
         verbose_name=_('First four digits of card'),
         max_length=4,
+        blank=True,
     )
 
     pan_first_6 = models.CharField(
         verbose_name=_('First six digits of card'),
         max_length=6,
+        blank=True,
     )
 
     pan_last_4 = models.CharField(
         verbose_name=_('Last four digits of card'),
         max_length=4,
+        blank=True,
     )
 
     class Meta:
