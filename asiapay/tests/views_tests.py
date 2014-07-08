@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from django_libs.tests.mixins import ViewRequestFactoryTestMixin
 from oscar.apps.basket.models import Basket
+from oscar.apps.order.utils import OrderNumberGenerator
 
 from . import factories
 from .. import models
@@ -15,12 +16,12 @@ class FailResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     view_class = views.FailResponseView
 
     def setUp(self):
+        self.basket = factories.BasketFactory()
         self.data = {'Ref': '100022'}
 
     def test_view(self):
         self.is_not_callable(data=self.data)
-        self.order = factories.OrderFactory(
-            number='100022', status=Basket.FROZEN)
+        self.data = {'Ref': OrderNumberGenerator().order_number(self.basket)}
         self.redirects(data=self.data, to=reverse('basket:summary'))
 
 
@@ -59,7 +60,7 @@ class DataFeedViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         }
 
     def test_view(self):
-        self.is_not_callable(data=self.data)
+        self.is_callable()
         self.is_postable(data=self.data, ajax=True)
         self.assertEqual(models.AsiaPayTransaction.objects.count(), 1, msg=(
             'A new transaction should have been saved.'))

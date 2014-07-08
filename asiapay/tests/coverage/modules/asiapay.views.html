@@ -126,17 +126,17 @@
 <div id="content-header">
   <h1>
     <span id="module-name">asiapay.views</span>:
-    46 total statements,
+    39 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Tue 2014-07-08 11:29 CEST</p>
+  <p>Generated: Tue 2014-07-08 11:46 CEST</p>
   <p>Source file: /home/tobi/Projects/django-oscar-asiapay/src/asiapay/views.py</p>
   <p>
     Stats:
-    <span class="executed">29 executed</span>,
+    <span class="executed">23 executed</span>,
     <span class="missed">0 missed</span>,
-    <span class="excluded">17 excluded</span>,
-    <span class="ignored">49 ignored</span> 
+    <span class="excluded">16 excluded</span>,
+    <span class="ignored">48 ignored</span> 
   </p> 
 </div>
 
@@ -154,20 +154,11 @@
 <li class="excluded"><code>from django.utils.translation import ugettext_lazy as _</code></li>
 <li class="ignored"><code></code></li>
 <li class="excluded"><code>from oscar.apps.checkout.views import PaymentDetailsView</code></li>
-<li class="excluded"><code>from oscar.core.loading import get_class</code></li>
 <li class="ignored"><code></code></li>
 <li class="excluded"><code>from .models import AsiaPayTransaction</code></li>
 <li class="ignored"><code></code></li>
 <li class="ignored"><code></code></li>
-<li class="executed"><code>ShippingAddress = get_model('order', 'ShippingAddress')</code></li>
-<li class="executed"><code>Order = get_model('order', 'Order')</code></li>
-<li class="executed"><code>Country = get_model('address', 'Country')</code></li>
 <li class="executed"><code>Basket = get_model('basket', 'Basket')</code></li>
-<li class="executed"><code>Repository = get_class('shipping.repository', 'Repository')</code></li>
-<li class="executed"><code>Applicator = get_class('offer.utils', 'Applicator')</code></li>
-<li class="executed"><code>Selector = get_class('partner.strategy', 'Selector')</code></li>
-<li class="ignored"><code></code></li>
-<li class="ignored"><code></code></li>
 <li class="executed"><code>logger = logging.getLogger('asiapay')</code></li>
 <li class="ignored"><code></code></li>
 <li class="ignored"><code></code></li>
@@ -175,14 +166,15 @@
 <li class="executed"><code>    permanent = False</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    def get(self, request, *args, **kwargs):</code></li>
+<li class="ignored"><code>        # Please check oscar.apps.order.utils.OrderNumberGenerator to</code></li>
+<li class="ignored"><code>        # understand the order/basket number procedure.</code></li>
 <li class="executed"><code>        try:</code></li>
-<li class="executed"><code>            order = Order.objects.get(</code></li>
-<li class="ignored"><code>                number=request.GET['Ref'], status=Basket.FROZEN)</code></li>
-<li class="executed"><code>        except Order.DoesNotExist:</code></li>
+<li class="executed"><code>            basket = Basket.objects.get(id=int(request.GET['Ref']) - 100000)</code></li>
+<li class="executed"><code>        except Basket.DoesNotExist:</code></li>
 <li class="executed"><code>            raise Http404</code></li>
-<li class="executed"><code>        order.basket.thaw()</code></li>
+<li class="executed"><code>        basket.thaw()</code></li>
 <li class="executed"><code>        logger.info("Payment cancelled (token %s) - basket #%s thawed",</code></li>
-<li class="ignored"><code>                    request.GET.get('token', '&lt;no token&gt;'), order.basket.id)</code></li>
+<li class="ignored"><code>                    request.GET.get('token', '&lt;no token&gt;'), basket.id)</code></li>
 <li class="executed"><code>        return super(FailResponseView, self).get(request, *args, **kwargs)</code></li>
 <li class="ignored"><code></code></li>
 <li class="executed"><code>    def get_redirect_url(self, **kwargs):</code></li>
@@ -207,7 +199,7 @@
 <li class="executed"><code>    @csrf_exempt</code></li>
 <li class="ignored"><code>    def dispatch(self, request, **kwargs):</code></li>
 <li class="executed"><code>        if not request.method == 'POST':</code></li>
-<li class="executed"><code>            raise Http404</code></li>
+<li class="executed"><code>            return HttpResponse('Empty GET request')</code></li>
 <li class="executed"><code>        AsiaPayTransaction.objects.create(</code></li>
 <li class="ignored"><code>            payment_method=request.POST['payMethod'],</code></li>
 <li class="ignored"><code>            currency_code=request.POST['Cur'],</code></li>

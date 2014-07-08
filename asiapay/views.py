@@ -10,20 +10,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext_lazy as _
 
 from oscar.apps.checkout.views import PaymentDetailsView
-from oscar.core.loading import get_class
 
 from .models import AsiaPayTransaction
 
 
-ShippingAddress = get_model('order', 'ShippingAddress')
-Order = get_model('order', 'Order')
-Country = get_model('address', 'Country')
 Basket = get_model('basket', 'Basket')
-Repository = get_class('shipping.repository', 'Repository')
-Applicator = get_class('offer.utils', 'Applicator')
-Selector = get_class('partner.strategy', 'Selector')
-
-
 logger = logging.getLogger('asiapay')
 
 
@@ -31,14 +22,15 @@ class FailResponseView(RedirectView):
     permanent = False
 
     def get(self, request, *args, **kwargs):
+        # Please check oscar.apps.order.utils.OrderNumberGenerator to
+        # understand the order/basket number procedure.
         try:
-            order = Order.objects.get(
-                number=request.GET['Ref'], status=Basket.FROZEN)
-        except Order.DoesNotExist:
+            basket = Basket.objects.get(id=int(request.GET['Ref']) - 100000)
+        except Basket.DoesNotExist:
             raise Http404
-        order.basket.thaw()
+        basket.thaw()
         logger.info("Payment cancelled (token %s) - basket #%s thawed",
-                    request.GET.get('token', '<no token>'), order.basket.id)
+                    request.GET.get('token', '<no token>'), basket.id)
         return super(FailResponseView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
@@ -63,7 +55,7 @@ class DataFeedView(View):
     @csrf_exempt
     def dispatch(self, request, **kwargs):
         if not request.method == 'POST':
-            raise Http404
+            return HttpResponse('Empty GET request')
         AsiaPayTransaction.objects.create(
             payment_method=request.POST['payMethod'],
             currency_code=request.POST['Cur'],
