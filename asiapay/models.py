@@ -174,6 +174,7 @@ class AsiaPayTransaction(models.Model):
 
     merchant_id = models.IntegerField(
         verbose_name=_('Merchant ID'),
+        blank=True, null=True,
     )
 
     exp_month = models.PositiveIntegerField(
