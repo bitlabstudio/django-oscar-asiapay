@@ -54,34 +54,33 @@ class SuccessResponseView(PaymentDetailsView):
 class DataFeedView(View):
     @csrf_exempt
     def dispatch(self, request, **kwargs):
-        if not request.method == 'POST':
-            raise Http404
-        AsiaPayTransaction.objects.create(
-            payment_method=request.POST.get('payMethod'),
-            currency_code=request.POST.get('Cur'),
-            prc=request.POST.get('prc'),
-            auth_id=request.POST.get('AuthId'),
-            success_code=request.POST.get('successcode'),
-            payer_auth=request.POST.get('payerAuth'),
-            channel_type=request.POST.get('channelType'),
-            order_number=request.POST.get('Ref'),
-            ip_country=request.POST.get('ipCountry'),
-            payment_reference=request.POST.get('PayRef'),
-            bank_reference=request.POST.get('Ord') or None,
-            account_holder=request.POST.get('Holder'),
-            amount=request.POST.get('Amt'),
-            transaction_time=request.POST.get('TxTime'),
-            eci=request.POST.get('eci'),
-            src=request.POST.get('src'),
-            remark=request.POST.get('remark'),
-            card_issuing_country=request.POST.get('cardIssuingCountry'),
-            alert_code=request.POST.get('AlertCode'),
-            merchant_id=request.POST.get('MerchantId'),
-            exp_month=request.POST.get('expMonth'),
-            exp_year=request.POST.get('expYear'),
-            source_ip=request.POST.get('sourceIp'),
-            pan_first_4=request.POST.get('panFirst4') or '',
-            pan_first_6=request.POST.get('panFirst6') or '',
-            pan_last_4=request.POST.get('panLast4') or '',
-        )
+        if request.method == 'POST':
+            AsiaPayTransaction.objects.create(
+                payment_method=request.POST.get('payMethod'),
+                currency_code=request.POST.get('Cur'),
+                prc=request.POST.get('prc'),
+                auth_id=request.POST.get('AuthId'),
+                success_code=request.POST.get('successcode'),
+                payer_auth=request.POST.get('payerAuth'),
+                channel_type=request.POST.get('channelType'),
+                order_number=request.POST.get('Ref'),
+                ip_country=request.POST.get('ipCountry'),
+                payment_reference=request.POST.get('PayRef'),
+                bank_reference=request.POST.get('Ord') or None,
+                account_holder=request.POST.get('Holder'),
+                amount=request.POST.get('Amt'),
+                transaction_time=request.POST.get('TxTime'),
+                eci=request.POST.get('eci'),
+                src=request.POST.get('src'),
+                remark=request.POST.get('remark'),
+                card_issuing_country=request.POST.get('cardIssuingCountry'),
+                alert_code=request.POST.get('AlertCode'),
+                merchant_id=request.POST.get('MerchantId'),
+                exp_month=request.POST.get('expMonth'),
+                exp_year=request.POST.get('expYear'),
+                source_ip=request.POST.get('sourceIp'),
+                pan_first_4=request.POST.get('panFirst4') or '',
+                pan_first_6=request.POST.get('panFirst6') or '',
+                pan_last_4=request.POST.get('panLast4') or '',
+            )
         return HttpResponse('OK')
