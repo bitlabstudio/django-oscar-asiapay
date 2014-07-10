@@ -36,7 +36,7 @@ class FailResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.basket = factories.BasketFactory()
 
     def test_view(self):
-        self.redirects(data={}, to=reverse('basket:summary'))
+        self.is_not_callable()
         self.data = {'Ref': OrderNumberGenerator().order_number(self.basket)}
         self.redirects(data=self.data, to=reverse('basket:summary'))
 

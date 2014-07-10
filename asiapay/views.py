@@ -64,12 +64,13 @@ class FailResponseView(RedirectView):
             basket = Basket.objects.get(
                 id=int(request.GET.get('Ref', 0)) - 100000)
         except Basket.DoesNotExist:
-            basket_id = '(ID unknown)'
-        else:
-            basket.thaw()
-            basket_id = basket.id
+            try:
+                basket = request.basket
+            except AttributeError:
+                raise Http404
+        basket.thaw()
         logger.info(
-            "Payment cancelled - basket #{} thawed".format(basket_id))
+            "Payment cancelled - basket #{} thawed".format(basket.id))
         return super(FailResponseView, self).dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
@@ -81,8 +82,6 @@ class SuccessResponseView(RedirectView):
     permanent = False
 
     def dispatch(self, request, *args, **kwargs):
-        # Please check oscar.apps.order.utils.OrderNumberGenerator to
-        # understand the order/basket number procedure.
         try:
             Order.objects.get(number=request.GET.get('Ref'))
         except Order.DoesNotExist:
