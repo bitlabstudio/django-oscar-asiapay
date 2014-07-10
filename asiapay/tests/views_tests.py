@@ -24,6 +24,20 @@ class FailResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.redirects(data=self.data, to=reverse('basket:summary'))
 
 
+class SuccessResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Tests for the ``SuccessResponseView`` view class."""
+    view_class = views.SuccessResponseView
+
+    def setUp(self):
+        self.order = factories.OrderFactory(number=100022)
+        self.data = {'Ref': '100021'}
+
+    def test_view(self):
+        self.is_not_callable(data=self.data)
+        self.data = {'Ref': '100022'}
+        self.redirects(data=self.data, to=reverse('checkout:thank-you'))
+
+
 class DataFeedViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Tests for the ``DataFeedView`` view class."""
     view_class = views.DataFeedView

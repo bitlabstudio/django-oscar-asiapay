@@ -15,13 +15,14 @@ from .models import AsiaPayTransaction
 
 
 Basket = get_model('basket', 'Basket')
+Order = get_model('order', 'Order')
 logger = logging.getLogger('asiapay')
 
 
 class FailResponseView(RedirectView):
     permanent = False
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         # Please check oscar.apps.order.utils.OrderNumberGenerator to
         # understand the order/basket number procedure.
         try:
@@ -31,24 +32,28 @@ class FailResponseView(RedirectView):
         basket.thaw()
         logger.info("Payment cancelled (token %s) - basket #%s thawed",
                     request.GET.get('token', '<no token>'), basket.id)
-        return super(FailResponseView, self).get(request, *args, **kwargs)
+        return super(FailResponseView, self).dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
         messages.error(self.request, _("AsiaPay transaction cancelled."))
         return reverse('basket:summary')
 
 
-class SuccessResponseView(PaymentDetailsView):
+class SuccessResponseView(RedirectView):
     permanent = False
 
-    def get(self, request, *args, **kwargs):  # pragma: nocover
-        self.handle_place_order_submission(request)
-        return super(SuccessResponseView, self).get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            order = Order.objects.get(number=request.GET['Ref'])
+        except Order.DoesNotExist:
+            raise Http404
+        return super(SuccessResponseView, self).dispatch(
+            request, *args, **kwargs)
 
-    def get_redirect_url(self, **kwargs):  # pragma: nocover
+    def get_redirect_url(self, **kwargs):
         messages.success(
             self.request, _("Your AsiaPay payment was successful."))
-        return reverse('thank-you')
+        return reverse('checkout:thank-you')
 
 
 class DataFeedView(View):

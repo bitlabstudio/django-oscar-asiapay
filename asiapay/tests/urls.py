@@ -15,6 +15,7 @@ from oscar.core.loading import get_class
 
 
 basket_app = get_class('basket.app', 'application')
+checkout_app = get_class('checkout.app', 'application')
 
 admin.autodiscover()
 
@@ -24,5 +25,6 @@ urlpatterns += i18n_patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^shop/basket/', include(basket_app.urls)),
+    url(r'^shop/checkout/', include(checkout_app.urls)),
     url(r'^shop/checkout/asiapay/', include('asiapay.urls')),
 )
