@@ -16,10 +16,9 @@ class FailResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):
 
     def setUp(self):
         self.basket = factories.BasketFactory()
-        self.data = {'Ref': '100022'}
 
     def test_view(self):
-        self.redirects(data=self.data, to=reverse('basket:summary'))
+        self.redirects(data={}, to=reverse('basket:summary'))
         self.data = {'Ref': OrderNumberGenerator().order_number(self.basket)}
         self.redirects(data=self.data, to=reverse('basket:summary'))
 

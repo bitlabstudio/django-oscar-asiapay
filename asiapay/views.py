@@ -9,8 +9,6 @@ from django.db.models import get_model
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext_lazy as _
 
-from oscar.apps.checkout.views import PaymentDetailsView
-
 from .models import AsiaPayTransaction
 
 
@@ -26,7 +24,8 @@ class FailResponseView(RedirectView):
         # Please check oscar.apps.order.utils.OrderNumberGenerator to
         # understand the order/basket number procedure.
         try:
-            basket = Basket.objects.get(id=int(request.GET['Ref']) - 100000)
+            basket = Basket.objects.get(
+                id=int(request.GET.get('Ref', 0)) - 100000)
         except Basket.DoesNotExist:
             basket_id = '(ID unknown)'
         else:
@@ -46,7 +45,7 @@ class SuccessResponseView(RedirectView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            order = Order.objects.get(number=request.GET['Ref'])
+            Order.objects.get(number=request.GET['Ref'])
         except Order.DoesNotExist:
             raise Http404
         return super(SuccessResponseView, self).dispatch(
