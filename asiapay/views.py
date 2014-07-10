@@ -7,9 +7,10 @@ from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
-from django.db.models import get_model
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext_lazy as _
+
+from oscar.core.loading import get_model
 
 from .models import AsiaPayTransaction
 
@@ -34,13 +35,18 @@ class PaymentView(TemplateView):
         base_url = '{}://{}'.format(scheme, host)
         success_url = base_url + reverse('asiapay-success-response')
         fail_url = base_url + reverse('asiapay-fail-response')
+        if 'checkout_order_id' in self.request.session:
+            order = Order._default_manager.get(
+                pk=self.request.session['checkout_order_id'])
+        else:
+            raise Http404(_("No order found"))
         context.update({
             'asiapay_url': settings.ASIAPAY_PAYDOLLAR_URL,
             'merchant_id': settings.ASIAPAY_MERCHANT_ID,
             'currency_code': getattr(settings, 'ASIAPAY_CURRENCY_CODE', 702),
             'asiapay_lang': getattr(settings, 'ASIAPAY_LANGUAGE', 'E'),
             'asiapay_paytype': getattr(settings, 'ASIAPAY_PAYTYPE', 'N'),
-            'order_number': self.generate_order_number(self.request.basket),
+            'order': order,
             'success_url': success_url,
             'fail_url': fail_url,
             'error_url': fail_url,
@@ -78,11 +84,9 @@ class SuccessResponseView(RedirectView):
         # Please check oscar.apps.order.utils.OrderNumberGenerator to
         # understand the order/basket number procedure.
         try:
-            basket = Basket.objects.get(
-                id=int(request.GET.get('Ref', 0)) - 100000)
-        except Basket.DoesNotExist:
+            Order.objects.get(number=request.GET.get('Ref'))
+        except Order.DoesNotExist:
             raise Http404
-        basket.submit()
         return super(SuccessResponseView, self).dispatch(
             request, *args, **kwargs)
 

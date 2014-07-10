@@ -1,6 +1,6 @@
 """Tests for the views of the ``user_profiles`` app."""
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from django_libs.tests.mixins import ViewRequestFactoryTestMixin
 from oscar.apps.order.utils import OrderNumberGenerator
@@ -8,6 +8,24 @@ from oscar.apps.order.utils import OrderNumberGenerator
 from . import factories
 from .. import models
 from .. import views
+
+
+class PaymentViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Tests for the ``PaymentView`` view class."""
+    view_class = views.PaymentView
+
+    def test_view(self):
+        self.is_not_callable()
+
+        with self.settings(ASIAPAY_LOCALTEST_URL=True):
+            self.is_not_callable()
+
+        req = RequestFactory().get(self.get_url())
+        req.session = {
+            'checkout_order_id': factories.OrderFactory().id,
+        }
+        resp = self.get_view()(req)
+        self.assert200(resp)
 
 
 class FailResponseViewTestCase(ViewRequestFactoryTestMixin, TestCase):

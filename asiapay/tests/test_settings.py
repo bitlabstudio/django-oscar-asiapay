@@ -6,6 +6,9 @@ from oscar import get_core_apps
 from oscar.defaults import *  # NOQA
 
 
+ASIAPAY_PAYDOLLAR_URL = "ASIAPAY_URL"
+ASIAPAY_MERCHANT_ID = "12345"
+
 logging.getLogger('factory').setLevel(logging.WARN)
 
 HAYSTACK_CONNECTIONS = {

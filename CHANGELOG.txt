@@ -1,5 +1,8 @@
 === ongoing ===
 
+=== 0.2 ===
+
+- Re-arranged views
 - Fixed fail view
 - Fixed success view
 - Allow GET request for data feed view

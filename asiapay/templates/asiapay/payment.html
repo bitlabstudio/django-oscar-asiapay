@@ -14,8 +14,8 @@
                 {% csrf_token %}
 				<input type="hidden" name="merchantId" value="{{ merchant_id }}">
 				<input type="hidden" name="currCode" value="{{ currency_code }}">
-				<input type="hidden" name="orderRef" value="{{ order_number }}">
-				<input type="hidden" name="amount" value="{{ order_total.incl_tax }}">
+				<input type="hidden" name="orderRef" value="{{ order.number }}">
+				<input type="hidden" name="amount" value="{{ order.total_incl_tax }}">
 				<input type="hidden" name="successUrl" value="{{ success_url }}">
 				<input type="hidden" name="failUrl" value="{{ fail_url }}">
 				<input type="hidden" name="errorUrl" value="{{ error_url }}">
