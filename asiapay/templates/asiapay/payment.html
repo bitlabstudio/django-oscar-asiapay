@@ -1,0 +1,41 @@
+{% extends "checkout/checkout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Pay now" %}{% endblock %}
+
+{% block checkout_nav %}
+    {% include 'checkout/nav.html' with step=4 %}
+{% endblock %}
+
+{% block place_order %}
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" action="{{ asiapay_url }}">
+                {% csrf_token %}
+				<input type="hidden" name="merchantId" value="{{ merchant_id }}">
+				<input type="hidden" name="currCode" value="{{ currency_code }}">
+				<input type="hidden" name="orderRef" value="{{ order_number }}">
+				<input type="hidden" name="amount" value="{{ order_total.incl_tax }}">
+				<input type="hidden" name="successUrl" value="{{ success_url }}">
+				<input type="hidden" name="failUrl" value="{{ fail_url }}">
+				<input type="hidden" name="errorUrl" value="{{ error_url }}">
+				<input type="hidden" name="lang" value="{{ asiapay_lang }}">
+				<input type="hidden" name="payType" value="{{ asiapay_paytype }}">
+                <div style="display:none">
+                    {% block hiddenforms %}{% endblock %}
+                </div>
+
+                <div class="form-actions clearfix">
+                    <div class="row">
+						<div class="col-md-1 col-md-offset-8">
+							<img src="https://raw.githubusercontent.com/bitmazk/django-oscar-asiapay/master/payv_logo.gif" alt="{% trans "AsiaPay" %}" />
+						</div>
+                        <div class="col-md-3">
+                            <button id='place-order' type="submit" class="btn btn-primary btn-block js-disable-on-click" data-loading-text="{% trans "Sending..." %}">{% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock place_order %}

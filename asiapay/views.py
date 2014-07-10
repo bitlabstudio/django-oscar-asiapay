@@ -1,8 +1,10 @@
 """Views for the ``asiapay`` app."""
 import logging
 
-from django.views.generic import RedirectView, View
+from django.views.generic import RedirectView, View, TemplateView
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.db.models import get_model
@@ -15,6 +17,35 @@ from .models import AsiaPayTransaction
 Basket = get_model('basket', 'Basket')
 Order = get_model('order', 'Order')
 logger = logging.getLogger('asiapay')
+
+
+class PaymentView(TemplateView):
+    template_name = "asiapay/payment.html"
+
+    def get_context_data(self, **kwargs):
+        # Add bankcard form to the template context
+        context = super(PaymentView, self).get_context_data(**kwargs)
+        if getattr(settings, 'ASIAPAY_LOCALTEST_URL', None):
+            host = settings.ASIAPAY_LOCALTEST_URL
+        else:
+            host = Site.objects.get_current().domain
+        scheme = 'https' if getattr(
+            settings, 'ASIAPAY_CALLBACK_HTTPS', True) else 'http'
+        base_url = '{}://{}'.format(scheme, host)
+        success_url = base_url + reverse('asiapay-success-response')
+        fail_url = base_url + reverse('asiapay-fail-response')
+        context.update({
+            'asiapay_url': settings.ASIAPAY_PAYDOLLAR_URL,
+            'merchant_id': settings.ASIAPAY_MERCHANT_ID,
+            'currency_code': getattr(settings, 'ASIAPAY_CURRENCY_CODE', 702),
+            'asiapay_lang': getattr(settings, 'ASIAPAY_LANGUAGE', 'E'),
+            'asiapay_paytype': getattr(settings, 'ASIAPAY_PAYTYPE', 'N'),
+            'order_number': self.generate_order_number(self.request.basket),
+            'success_url': success_url,
+            'fail_url': fail_url,
+            'error_url': fail_url,
+        })
+        return context
 
 
 class FailResponseView(RedirectView):
@@ -44,10 +75,14 @@ class SuccessResponseView(RedirectView):
     permanent = False
 
     def dispatch(self, request, *args, **kwargs):
+        # Please check oscar.apps.order.utils.OrderNumberGenerator to
+        # understand the order/basket number procedure.
         try:
-            Order.objects.get(number=request.GET['Ref'])
-        except Order.DoesNotExist:
+            basket = Basket.objects.get(
+                id=int(request.GET.get('Ref', 0)) - 100000)
+        except Basket.DoesNotExist:
             raise Http404
+        basket.submit()
         return super(SuccessResponseView, self).dispatch(
             request, *args, **kwargs)
 
