@@ -28,10 +28,12 @@ class FailResponseView(RedirectView):
         try:
             basket = Basket.objects.get(id=int(request.GET['Ref']) - 100000)
         except Basket.DoesNotExist:
-            raise Http404
-        basket.thaw()
-        logger.info("Payment cancelled (token %s) - basket #%s thawed",
-                    request.GET.get('token', '<no token>'), basket.id)
+            basket_id = '(ID unknown)'
+        else:
+            basket.thaw()
+            basket_id = basket.id
+        logger.info(
+            "Payment cancelled - basket #{} thawed".format(basket_id))
         return super(FailResponseView, self).dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):

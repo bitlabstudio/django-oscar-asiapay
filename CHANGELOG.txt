@@ -1,5 +1,6 @@
 === ongoing ===
 
+- Fixed fail view
 - Fixed success view
 - Allow GET request for data feed view
 
