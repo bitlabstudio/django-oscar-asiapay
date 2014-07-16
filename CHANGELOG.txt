@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.2.2 ===
+
+- Sourced out payment form context data
+
 === 0.2.1 ===
 
 - Fixed fail view
