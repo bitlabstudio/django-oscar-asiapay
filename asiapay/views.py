@@ -20,12 +20,12 @@ Order = get_model('order', 'Order')
 logger = logging.getLogger('asiapay')
 
 
-class PaymentView(TemplateView):
-    template_name = "asiapay/payment.html"
-
+# --- START MIXINS ---
+class PaymentFormMixin(object):
+    """Mixin to provide context data for the AsiaPay POST form."""
     def get_context_data(self, **kwargs):
         # Add bankcard form to the template context
-        context = super(PaymentView, self).get_context_data(**kwargs)
+        context = super(PaymentFormMixin, self).get_context_data(**kwargs)
         if getattr(settings, 'ASIAPAY_LOCALTEST_URL', None):
             host = settings.ASIAPAY_LOCALTEST_URL
         else:
@@ -52,6 +52,11 @@ class PaymentView(TemplateView):
             'error_url': fail_url,
         })
         return context
+# --- END MIXINS ---
+
+
+class PaymentView(PaymentFormMixin, TemplateView):
+    template_name = "asiapay/payment.html"
 
 
 class FailResponseView(RedirectView):
