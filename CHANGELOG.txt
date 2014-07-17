@@ -1,5 +1,7 @@
 === ongoing ===
 
+=== 0.3 ===
+
 - Fixed all url names
 - Allow number parameter in payment view
 
