@@ -33,8 +33,8 @@ class PaymentFormMixin(object):
         scheme = 'https' if getattr(
             settings, 'ASIAPAY_CALLBACK_HTTPS', True) else 'http'
         base_url = '{}://{}'.format(scheme, host)
-        success_url = base_url + reverse('asiapay-success-response')
-        fail_url = base_url + reverse('asiapay-fail-response')
+        success_url = base_url + reverse('asiapay_success_response')
+        fail_url = base_url + reverse('asiapay_fail_response')
         if 'checkout_order_id' in self.request.session:
             order = Order._default_manager.get(
                 pk=self.request.session['checkout_order_id'])

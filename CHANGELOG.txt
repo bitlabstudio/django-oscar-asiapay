@@ -1,5 +1,7 @@
 === ongoing ===
 
+- Fixed all url names
+
 === 0.2.2 ===
 
 - Sourced out payment form context data

@@ -7,11 +7,11 @@ from asiapay import views
 urlpatterns = patterns(
     '',
     url(r'^pay-now/$', views.PaymentView.as_view(),
-        name='asiapay-pay-now'),
+        name='asiapay_pay_now'),
     url(r'^data-feed/$', views.DataFeedView.as_view(),
-        name='asiapay-data-feed'),
+        name='asiapay_data_feed'),
     url(r'^success/$', views.SuccessResponseView.as_view(),
-        name='asiapay-success-response'),
+        name='asiapay_success_response'),
     url(r'^fail/$', views.FailResponseView.as_view(),
-        name='asiapay-fail-response'),
+        name='asiapay_fail_response'),
 )

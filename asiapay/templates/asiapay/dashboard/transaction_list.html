@@ -43,7 +43,7 @@
             <tbody>
                 {% for txn in transactions %}
                     <tr>
-                        <td><a href="{% url 'asiapay-paydollar-detail' txn.id %}">{{ txn.correlation_id|default:"-" }}</a></td>
+                        <td><a href="{% url 'asiapay_paydollar_detail' txn.id %}">{{ txn.correlation_id|default:"-" }}</a></td>
                         <td>{{ txn.method }}</td>
                         <td>{{ txn.ack }}</td>
                         <td>{{ txn.amount|currency:txn.currency }}</td>
