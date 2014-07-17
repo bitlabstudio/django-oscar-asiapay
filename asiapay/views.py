@@ -23,6 +23,19 @@ logger = logging.getLogger('asiapay')
 # --- START MIXINS ---
 class PaymentFormMixin(object):
     """Mixin to provide context data for the AsiaPay POST form."""
+    def dispatch(self, request, *args, **kwargs):
+        if 'number' in kwargs:
+            try:
+                self.order = Order.objects.get(number=kwargs['number'])
+            except Order.DoesNotExist:
+                raise Http404(_("No order found"))
+        elif 'checkout_order_id' in self.request.session:
+            self.order = Order._default_manager.get(
+                pk=self.request.session['checkout_order_id'])
+        else:
+            raise Http404(_("No order found"))
+        return super(PaymentFormMixin, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         # Add bankcard form to the template context
         context = super(PaymentFormMixin, self).get_context_data(**kwargs)
@@ -52,19 +65,6 @@ class PaymentFormMixin(object):
 
 class PaymentView(PaymentFormMixin, TemplateView):
     template_name = "asiapay/payment.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if 'number' in kwargs:
-            try:
-                self.order = Order.objects.get(number=kwargs['number'])
-            except Order.DoesNotExist:
-                raise Http404(_("No order found"))
-        elif 'checkout_order_id' in self.request.session:
-            self.order = Order._default_manager.get(
-                pk=self.request.session['checkout_order_id'])
-        else:
-            raise Http404(_("No order found"))
-        return super(PaymentView, self).dispatch(request, *args, **kwargs)
 
 
 class FailResponseView(RedirectView):
