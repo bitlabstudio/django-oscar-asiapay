@@ -35,18 +35,13 @@ class PaymentFormMixin(object):
         base_url = '{}://{}'.format(scheme, host)
         success_url = base_url + reverse('asiapay_success_response')
         fail_url = base_url + reverse('asiapay_fail_response')
-        if 'checkout_order_id' in self.request.session:
-            order = Order._default_manager.get(
-                pk=self.request.session['checkout_order_id'])
-        else:
-            raise Http404(_("No order found"))
         context.update({
             'asiapay_url': settings.ASIAPAY_PAYDOLLAR_URL,
             'merchant_id': settings.ASIAPAY_MERCHANT_ID,
             'currency_code': getattr(settings, 'ASIAPAY_CURRENCY_CODE', 702),
             'asiapay_lang': getattr(settings, 'ASIAPAY_LANGUAGE', 'E'),
             'asiapay_paytype': getattr(settings, 'ASIAPAY_PAYTYPE', 'N'),
-            'order': order,
+            'order': self.order,
             'success_url': success_url,
             'fail_url': fail_url,
             'error_url': fail_url,
@@ -57,6 +52,19 @@ class PaymentFormMixin(object):
 
 class PaymentView(PaymentFormMixin, TemplateView):
     template_name = "asiapay/payment.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'number' in kwargs:
+            try:
+                self.order = Order.objects.get(number=kwargs['number'])
+            except Order.DoesNotExist:
+                raise Http404(_("No order found"))
+        elif 'checkout_order_id' in self.request.session:
+            self.order = Order._default_manager.get(
+                pk=self.request.session['checkout_order_id'])
+        else:
+            raise Http404(_("No order found"))
+        return super(PaymentView, self).dispatch(request, *args, **kwargs)
 
 
 class FailResponseView(RedirectView):

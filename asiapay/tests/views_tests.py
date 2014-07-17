@@ -14,15 +14,19 @@ class PaymentViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Tests for the ``PaymentView`` view class."""
     view_class = views.PaymentView
 
+    def setUp(self):
+        self.order = factories.OrderFactory()
+
     def test_view(self):
         self.is_not_callable()
+        self.is_not_callable(kwargs={'number': 999})
 
         with self.settings(ASIAPAY_LOCALTEST_URL=True):
-            self.is_not_callable()
+            self.is_callable(kwargs={'number': self.order.number})
 
         req = RequestFactory().get(self.get_url())
         req.session = {
-            'checkout_order_id': factories.OrderFactory().id,
+            'checkout_order_id': self.order.id,
         }
         resp = self.get_view()(req)
         self.assert200(resp)
