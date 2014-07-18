@@ -1,5 +1,9 @@
 === ongoing ===
 
+- Added context variable to payment view if txn already exists
+
+=== 0.3.3 ===
+
 - Added settings for redirect URLs
 
 === 0.3.2 ===

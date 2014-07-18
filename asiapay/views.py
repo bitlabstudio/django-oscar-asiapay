@@ -59,6 +59,13 @@ class PaymentFormMixin(object):
             'fail_url': fail_url,
             'error_url': fail_url,
         })
+        try:
+            context.update({
+                'existing_txn': AsiaPayTransaction.objects.get(
+                    order_number=self.order.number),
+            })
+        except AsiaPayTransaction.DoesNotExist:
+            pass
         return context
 # --- END MIXINS ---
 
