@@ -129,6 +129,34 @@ Default: 'N'
 Paytype you want to use. Please check the PayDollar Integration Guide.
 
 
+ASIAPAY_SUCCESS_REDIRECT
+++++++++++++++++++++++++
+
+Default: reverse('checkout:thank-you')
+
+URL to redirect to after successful transaction. Use for example::
+
+    ASIAPAY_SUCCESS_REDIRECT = '/'
+
+or::
+
+    ASIAPAY_SUCCESS_REDIRECT = reverse_lazy('your_url_name')
+
+
+ASIAPAY_FAILURE_REDIRECT
+++++++++++++++++++++++++
+
+Default: reverse('basket:summary')
+
+URL to redirect to after failed transaction. Use for example::
+
+    ASIAPAY_SUCCESS_REDIRECT = '/'
+
+or::
+
+    ASIAPAY_SUCCESS_REDIRECT = reverse_lazy('your_url_name')
+
+
 Roadmap
 -------
 

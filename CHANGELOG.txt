@@ -1,5 +1,7 @@
 === ongoing ===
 
+- Added settings for redirect URLs
+
 === 0.3.2 ===
 
 - Moved payment view dispatch to mixin

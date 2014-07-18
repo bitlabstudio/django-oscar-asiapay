@@ -88,7 +88,8 @@ class FailResponseView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
         messages.error(self.request, _("AsiaPay transaction cancelled."))
-        return reverse('basket:summary')
+        return getattr(settings, 'ASIAPAY_FAILURE_REDIRECT', reverse(
+            'basket:summary'))
 
 
 class SuccessResponseView(RedirectView):
@@ -105,7 +106,8 @@ class SuccessResponseView(RedirectView):
     def get_redirect_url(self, **kwargs):
         messages.success(
             self.request, _("Your AsiaPay payment was successful."))
-        return reverse('checkout:thank-you')
+        return getattr(settings, 'ASIAPAY_SUCCESS_REDIRECT', reverse(
+            'checkout:thank-you'))
 
 
 class DataFeedView(View):
