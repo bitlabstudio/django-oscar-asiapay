@@ -1,5 +1,7 @@
 === ongoing ===
 
+- Transformed some integer fields to big integer fields
+
 === 0.3.4 ===
 
 - Added context variable to payment view if txn already exists

@@ -127,11 +127,11 @@ class AsiaPayTransaction(models.Model):
         max_length=3,
     )
 
-    payment_reference = models.IntegerField(
+    payment_reference = models.BigIntegerField(
         verbose_name=_('Payment Reference'),
     )
 
-    bank_reference = models.IntegerField(
+    bank_reference = models.BigIntegerField(
         verbose_name=_('Bank reference (ORD)'),
         blank=True, null=True,
     )
@@ -173,7 +173,7 @@ class AsiaPayTransaction(models.Model):
         help_text=_('e.g. R14 - IP Country not match with Issuing Country'),
     )
 
-    merchant_id = models.IntegerField(
+    merchant_id = models.BigIntegerField(
         verbose_name=_('Merchant ID'),
         blank=True, null=True,
     )
