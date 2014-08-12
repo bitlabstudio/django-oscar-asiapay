@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.3.6 ===
+
+- Removed readonly fields from admin
+
 === 0.3.5 ===
 
 - Transformed some integer fields to big integer fields
