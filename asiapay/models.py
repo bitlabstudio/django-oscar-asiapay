@@ -222,7 +222,7 @@ class AsiaPayTransaction(models.Model):
 
     @property
     def is_successful(self):
-        return self.prc == '0'
+        return int(self.prc) == 0
 
     def __unicode__(self):
         return self.order_number

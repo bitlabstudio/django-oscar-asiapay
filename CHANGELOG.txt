@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.3.7 ===
+
+- Small fix on is_successful function
+
 === 0.3.6 ===
 
 - Removed readonly fields from admin
