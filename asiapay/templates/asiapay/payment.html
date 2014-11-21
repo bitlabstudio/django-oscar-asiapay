@@ -10,7 +10,7 @@
 {% block place_order %}
     <div class="row">
         <div class="col-md-12">
-			{% if existing_txn %}
+			{% if existing_txns %}
 				<p>{% trans "We've already recorded a transaction reffering to this order." %}</p>
 			{% else %}
 				<form method="post" action="{{ asiapay_url }}">

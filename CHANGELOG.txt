@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.3.8 ===
+
+- Fixed context data, if doubled txns exist
+
 === 0.3.7 ===
 
 - Small fix on is_successful function
