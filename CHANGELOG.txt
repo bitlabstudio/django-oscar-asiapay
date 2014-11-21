@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.3.9 ===
+
+- Improved context data one again
+
 === 0.3.8 ===
 
 - Fixed context data, if doubled txns exist

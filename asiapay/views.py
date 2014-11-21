@@ -59,7 +59,7 @@ class PaymentFormMixin(object):
             'fail_url': fail_url,
             'error_url': fail_url,
             'existing_txns': AsiaPayTransaction.objects.filter(
-                order_number=self.order.number),
+                order_number=self.order.number, success_code=0),
         })
         return context
 # --- END MIXINS ---
