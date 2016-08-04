@@ -1,11 +1,10 @@
 """Urls for the ``asiapay`` app."""
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from asiapay import views
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^pay-now/$', views.PaymentView.as_view(),
         name='asiapay_pay_now'),
     url(r'^pay-now/(?P<number>\d+)/$', views.PaymentView.as_view(),
@@ -16,4 +15,4 @@ urlpatterns = patterns(
         name='asiapay_success_response'),
     url(r'^fail/$', views.FailResponseView.as_view(),
         name='asiapay_fail_response'),
-)
+]

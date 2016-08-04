@@ -50,9 +50,30 @@ STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), 'test_static'),
 )
 
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), '../templates'),
-)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [os.path.join(os.path.dirname(__file__), '../templates'),],
+    'OPTIONS': {
+        'debug': DEBUG,
+        'loaders': (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+            'django.template.loaders.eggs.Loader',
+        ),
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.request',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
+            'django.contrib.messages.context_processors.messages',
+            'django_libs.context_processors.analytics',
+            'sekizai.context_processors.sekizai',
+            'cms.context_processors.cms_settings',
+            'var_project_name.context_processors.project_settings',
+        )
+    }
+}]
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(
     os.path.dirname(__file__), 'coverage')
@@ -72,8 +93,6 @@ EXTERNAL_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
-    'django_nose',
-    'oscar',
 ] + get_core_apps()
 
 INTERNAL_APPS = [

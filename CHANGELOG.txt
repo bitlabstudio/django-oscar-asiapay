@@ -1,4 +1,6 @@
-=== ongoing ===
+=== 0.4 (ongoing) ===
+
+- Fixed Django 1.8/1.9 related issues
 
 === 0.3.9 ===
 

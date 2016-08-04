@@ -188,7 +188,7 @@ class AsiaPayTransaction(models.Model):
         blank=True, null=True,
     )
 
-    source_ip = models.IPAddressField(
+    source_ip = models.GenericIPAddressField(
         verbose_name=_('Source IP'),
     )
 
