@@ -3,7 +3,7 @@
 # ===========================================================================
 # Packages essential to this app. Needed by anyone who wants to use this app.
 # ===========================================================================
-django==1.6.2
+django==1.11.29
 django-oscar
 South==0.8.4
 
